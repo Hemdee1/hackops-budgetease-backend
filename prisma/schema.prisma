@@ -22,7 +22,7 @@ model User {
   password String
   avatar String
   
-  budget Budget?
+  
   
   createdAt DateTime @default(now())
   updatedAt DateTime?  @updatedAt
