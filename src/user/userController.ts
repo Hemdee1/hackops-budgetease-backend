@@ -74,3 +74,5 @@ const signUp: RequestHandler<unknown, unknown, signUpUser, unknown> = async (
     res.status(400).json(error.message);
   }
 };
+
+export { signUp };
