@@ -24,3 +24,17 @@ export interface category {
   price: number;
   percent: number;
 }
+
+export interface createCategoryType {
+  categories: category[];
+}
+
+export interface budget {
+  monthlyIncome: number;
+  annualRent: number;
+  gender: string;
+  maritalStatus: string;
+  modeOfTransport: string;
+  defaultCurrency: string;
+  categories: category[];
+}
