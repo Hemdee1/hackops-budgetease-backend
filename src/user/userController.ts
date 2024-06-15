@@ -242,3 +242,42 @@ const sendPasswordLink: RequestHandler<
     res.status(400).json(error.message);
   }
 };
+
+const resetPassword: RequestHandler = async (req, res) => {
+  const token = req.params.token;
+  const { password } = req.body;
+
+  try {
+    if (!password) {
+      // res.status(500).json("password is required");
+      throw Error("password is required");
+    }
+
+    if (password.length < 8) {
+      // res.status(500).json("Password must be at least 8 characters long");
+      throw Error("Password must be at least 8 characters long");
+    }
+
+    const id = verifyToken(token!);
+    if (!id) {
+      // res
+      //   .status(500)
+      //   .json("The link is expired or invalid, please generate another link");
+      throw Error(
+        "The link is expired or invalid, please generate another link"
+      );
+    }
+
+    const hashedPassword = await hashData(password, 10);
+
+    await prisma.user.update({
+      where: { id },
+      data: { password: hashedPassword },
+    });
+
+    res.status(201).json("password change succesfully");
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json(error.message);
+  }
+};
