@@ -74,3 +74,73 @@ const signUp: RequestHandler<unknown, unknown, signUpUser, unknown> = async (
     res.status(400).json(error.message);
   }
 };
+
+const logIn: RequestHandler<unknown, unknown, loginUser, unknown> = async (
+  req,
+  res
+) => {
+  let { email, password } = req.body;
+
+  email = email.toLowerCase();
+
+  try {
+    if (!(email && password)) {
+      throw Error("all credentials must be included");
+    }
+
+    const user = await prisma.user.findFirst({
+      where: { email },
+      include: {
+        budget: {
+          include: {
+            category: {
+              include: {
+                expense: true,
+              },
+            },
+            income: true,
+            expense: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw Error("Incorrect credentials");
+    }
+
+    const passowrdMatch = await verifyHashedData(password, user?.password!);
+
+    if (!passowrdMatch) {
+      throw Error("Incorrect credentials");
+    }
+
+    if (!user.verified) {
+      //   // send a link to verify email
+      const token = createToken(user.id);
+      const link = `${url}/create/verify-email?token=${token}`;
+
+      const data = {
+        email: user.email,
+        subject: "Verify your account",
+        html: verifyEmailTemplate({ firstName: user.firstName, link }),
+      };
+
+      // await sendMail(data);
+      // await sendEmailUsingSMTPExpress(data)
+      await sendEmailUsingNodemailer(data);
+
+      throw Error("Email is not verified!");
+    }
+
+    req.session.userId = user.id;
+
+    // exclude password
+    user.password = "";
+
+    res.status(200).json(user);
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json(error.message);
+  }
+};
