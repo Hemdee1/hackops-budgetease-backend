@@ -199,3 +199,46 @@ const updateProfile: RequestHandler = async (req, res) => {
     res.status(400).json(error.message);
   }
 };
+
+const sendPasswordLink: RequestHandler<
+  unknown,
+  unknown,
+  changePassword,
+  unknown
+> = async (req, res) => {
+  let { email } = req.body;
+
+  email = email.toLowerCase();
+
+  try {
+    if (!email) {
+      // res.status(500).json("Email is required");
+      throw Error("Email is required");
+    }
+
+    const user = await prisma.user.findFirst({ where: { email } });
+
+    if (!user) {
+      // res.status(500).json(" no user found");
+      throw Error("No user found");
+    }
+
+    const token = createToken(user.id);
+    const link = `${url}/create/reset-password?token=${token}`;
+
+    const data = {
+      email: user.email,
+      subject: "Reset Your Password",
+      html: resetPasswordEmailTemplate({ firstName: user.firstName, link }),
+    };
+
+    // await sendMail(data);
+    // await sendEmailUsingSMTPExpress(data);
+    await sendEmailUsingNodemailer(data);
+
+    res.status(200).json("link sent successfully");
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json(error.message);
+  }
+};
