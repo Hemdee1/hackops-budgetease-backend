@@ -168,3 +168,34 @@ const verifyEmail: RequestHandler = async (req, res) => {
     res.status(400).json(error.message);
   }
 };
+
+const updateProfile: RequestHandler = async (req, res) => {
+  const userId = req.session.userId;
+  const body = req.body;
+  const avatar = body?.avatar;
+
+  try {
+    if (!userId) {
+      // res.status(500).json("user not authenticated");
+      throw Error("user not authenticated");
+    }
+    if (avatar) {
+      const res = await cloudinaryUploadImage(body.avatar, userId);
+      if (res?.secure_url) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: { avatar: res.secure_url },
+        });
+      } else {
+        throw Error("avatar upload failed");
+      }
+    } else {
+      await prisma.user.update({ data: { ...body }, where: { id: userId } });
+    }
+
+    res.status(201).json("information upgraded succesfully");
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json(error.message);
+  }
+};
