@@ -144,3 +144,27 @@ const logIn: RequestHandler<unknown, unknown, loginUser, unknown> = async (
     res.status(400).json(error.message);
   }
 };
+
+const verifyEmail: RequestHandler = async (req, res) => {
+  const token = req.params.token;
+
+  try {
+    const id = verifyToken(token!);
+
+    if (!id) {
+      // res
+      //   .status(500)
+      //   .json("The link has expired or invalid, please generate another link");
+      throw Error(
+        "The link has expired or invalid, please generate another link"
+      );
+    }
+
+    await prisma.user.update({ data: { verified: true }, where: { id } });
+
+    res.status(200).json("email verified successfully");
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json(error.message);
+  }
+};
