@@ -281,3 +281,39 @@ const resetPassword: RequestHandler = async (req, res) => {
     res.status(400).json(error.message);
   }
 };
+
+const autoLogin: RequestHandler = async (req, res) => {
+  const userId = req.session.userId;
+
+  try {
+    const user = await prisma.user.findFirst({
+      where: { id: userId },
+      include: {
+        budget: {
+          include: {
+            category: {
+              include: {
+                expense: true,
+              },
+            },
+            income: true,
+            expense: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      // res.status(500).json("no user available, please login");
+      throw Error("no user available, please login");
+    }
+
+    // exclude password
+    user.password = "";
+
+    res.status(200).json(user);
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json(error.message);
+  }
+};
