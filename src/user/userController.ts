@@ -351,3 +351,19 @@ const getAllUser: RequestHandler = async (req, res) => {
     res.status(400).json(error.message);
   }
 };
+
+export {
+  signUp,
+  logIn,
+  verifyEmail,
+  updateProfile,
+  // endpoint to create and send token for password reset
+  sendPasswordLink,
+  // endpoint to update password
+  resetPassword,
+  // endpoint to get authenticated user
+  autoLogin,
+  logOut,
+  getUser,
+  getAllUser,
+};
