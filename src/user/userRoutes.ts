@@ -11,3 +11,11 @@ router.get("/:id", userController.getUser);
 router.post("/signup", userController.signUp);
 router.post("/login", userController.logIn);
 router.post("/logout", userController.logOut);
+
+router.post("/update", checkAuthUser, userController.updateProfile);
+
+router.post("/verify-email/:token", userController.verifyEmail);
+router.post("/send-password-link", userController.sendPasswordLink);
+router.post("/reset-password/:token", userController.resetPassword);
+
+export default router;
