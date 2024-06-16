@@ -317,3 +317,14 @@ const autoLogin: RequestHandler = async (req, res) => {
     res.status(400).json(error.message);
   }
 };
+
+const logOut: RequestHandler = async (req, res) => {
+  req.session.destroy((error) => {
+    if (error) {
+      console.log(error);
+      res.sendStatus(400);
+    } else {
+      res.json("logout successfully");
+    }
+  });
+};
