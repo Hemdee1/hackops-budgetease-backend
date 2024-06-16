@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
+import userRoutes from "./user/userRoutes";
 
 const app = express();
 
@@ -42,6 +43,8 @@ app.use(
     store: sessionStore,
   })
 );
+
+app.use("/user", userRoutes);
 
 app.get("/", (req, res) => {
   res
