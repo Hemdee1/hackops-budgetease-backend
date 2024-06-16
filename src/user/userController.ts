@@ -328,3 +328,15 @@ const logOut: RequestHandler = async (req, res) => {
     }
   });
 };
+
+const getUser: RequestHandler = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const users = await prisma.user.findFirst({ where: { id } });
+
+    res.status(200).json(users);
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json(error.message);
+  }
+};
