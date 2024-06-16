@@ -340,3 +340,14 @@ const getUser: RequestHandler = async (req, res) => {
     res.status(400).json(error.message);
   }
 };
+
+const getAllUser: RequestHandler = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+
+    res.status(200).json(users);
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json(error.message);
+  }
+};
