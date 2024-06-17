@@ -80,3 +80,40 @@ export const createBudget: RequestHandler<
     res.status(400).json(error.message);
   }
 };
+
+export const deleteBudget: RequestHandler<
+  unknown,
+  unknown,
+  unknown,
+  { user: string }
+> = async (req, res) => {
+  const userId = req.session.userId;
+  const { user } = req.query;
+
+  try {
+    if (!userId) {
+      return res.status(500).json("login to delete a budget");
+    }
+
+    const budget = await prisma.budget.findFirst({
+      where: { userId: userId },
+    });
+
+    if (budget) {
+      await prisma.income.deleteMany({ where: { budgetId: budget.id } });
+      await prisma.expense.deleteMany({ where: { budgetId: budget.id } });
+      await prisma.category.deleteMany({ where: { budgetId: budget.id } });
+
+      await prisma.budget.delete({ where: { id: budget.id } });
+    }
+
+    if (user) {
+      return res.redirect("/user/autologin");
+    }
+
+    return res.status(200).json(budget);
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json(error.message);
+  }
+};
