@@ -117,3 +117,20 @@ export const deleteBudget: RequestHandler<
     res.status(400).json(error.message);
   }
 };
+
+export const getBudgets: RequestHandler = async (req, res) => {
+  const userId = req.session.userId;
+  try {
+    if (!userId) {
+      return res.status(500).json("login to create a budget");
+    }
+    const budgets = await prisma.budget.findFirst({
+      where: { userId: userId },
+    });
+
+    return res.status(200).json(budgets);
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json(error.message);
+  }
+};
