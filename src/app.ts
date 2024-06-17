@@ -4,6 +4,7 @@ import cors from "cors";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import userRoutes from "./user/userRoutes";
+import budgetRoutes from "./budget/routes";
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use(
 );
 
 app.use("/user", userRoutes);
+app.use("/budget", budgetRoutes);
 
 app.get("/", (req, res) => {
   res
