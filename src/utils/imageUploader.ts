@@ -15,7 +15,7 @@ const cloudinaryUploadImage = async (
 
   try {
     const res = await cloudinary.uploader.upload(img, {
-      folder: "baskiko",
+      folder: "budgetease",
       public_id: id,
       width: 1000,
       crop: "scale",
