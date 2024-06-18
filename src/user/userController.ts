@@ -12,7 +12,9 @@ import sendEmailUsingNodemailer from "../utils/sendEmailNodemailer";
 
 const prisma = new PrismaClient();
 const url =
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:3000";
+  process.env.NODE_ENV === "production"
+    ? "https://mute-pies-flimsy-agreement-production.pipeops.app"
+    : "http://localhost:3000";
 
 const signUp: RequestHandler<unknown, unknown, signUpUser, unknown> = async (
   req,

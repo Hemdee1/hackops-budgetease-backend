@@ -14,7 +14,7 @@ const app = express();
 
 const origin =
   process.env.NODE_ENV === "production"
-    ? "https://budgetease-azure.vercel.app"
+    ? "https://mute-pies-flimsy-agreement-production.pipeops.app"
     : "http://localhost:3000";
 
 // middlewares
