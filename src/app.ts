@@ -1,15 +1,21 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import userRoutes from "./User/userRoutes";
+import budgetRoutes from "./budget/routes";
+import categoryRoutes from "./category/routes";
+import expenseRoutes from "./expense/routes";
+import incomeRoutes from "./income/routes";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
-import userRoutes from "./user/userRoutes";
-import budgetRoutes from "./budget/routes";
+import { getRates } from "./rate/controller";
 
 const app = express();
 
 const origin =
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:3000";
+  process.env.NODE_ENV === "production"
+    ? "https://budgetease-azure.vercel.app"
+    : "http://localhost:3000";
 
 // middlewares
 app.use(
@@ -45,15 +51,21 @@ app.use(
   })
 );
 
-app.use("/user", userRoutes);
-app.use("/budget", budgetRoutes);
-
 app.get("/", (req, res) => {
   res
     .status(200)
     .json({ message: "Welecome to BudgetEase Backend API Service" });
 });
 
+app.use("/user", userRoutes);
+app.use("/budget", budgetRoutes);
+app.use("/category", categoryRoutes);
+app.use("/expense", expenseRoutes);
+app.use("/income", incomeRoutes);
+app.get("/rates", getRates);
+
 app.listen(process.env.PORT, () => {
   console.log(`server ready and listening on port:${process.env.PORT}`);
 });
+
+export default app;
