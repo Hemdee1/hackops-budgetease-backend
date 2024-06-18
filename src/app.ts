@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import userRoutes from "./User/userRoutes";
+import userRoutes from "./user/userRoutes";
 import budgetRoutes from "./budget/routes";
 import categoryRoutes from "./category/routes";
 import expenseRoutes from "./expense/routes";
